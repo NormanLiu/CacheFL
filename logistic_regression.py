@@ -80,16 +80,7 @@ def one_inner_outer_iteration2(x_start_latest, x_start_delayed, M, K, stepsize, 
 
 def one_inner_outer_iteration3(x_start, M, K, stepsize, datasize):
     grads = np.zeros_like(x_start)
-    """
-    for m in range(M):
-        x = x_start.copy()
-        for _ in range(K):
-            #g = objective_stochastic_gradient(x, 1)
-            g = fedprox_loss_stochastic_gradient(x, features[m*datasize:(m+1)*datasize,:], labels[m*datasize:(m+1)*datasize], 1, x_start)
-            grads += g / M
-            x -= stepsize * g
 
-    """
     for m in range(M // 2):
         x = x_start.copy()
         for _ in range(int(K)):
@@ -370,5 +361,3 @@ experiment(M=10,K=5,R=200,plotfile= plot_prefix + '/smallerM-smallK-' + distribu
 experiment(M=50,K=5,R=200,plotfile= plot_prefix + '/smallM-smallK-' + distribution + '.png',savearray=plot_prefix + '/smallM-smallK-' + distribution)
 experiment(M=500,K=5,R=200,plotfile= plot_prefix + '/bigM-smallK-' + distribution + '.png',savearray=plot_prefix + '/bigM-smallK-' + distribution)
 experiment(M=50,K=40,R=200,plotfile= plot_prefix + '/smallM-bigK-' + distribution + '.png',savearray=plot_prefix + '/smallM-bigK-' + distribution)
-#experiment(M=500,K=40,R=100,plotfile='plots/bigM-bigK-het.png',savearray='plots/bigM-bigK-het')
-#experiment(M=50,K=200,R=100,plotfile='plots/smallM-biggerK-het.png',savearray='plots/smallM-biggerK-het')

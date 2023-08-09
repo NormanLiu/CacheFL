@@ -101,12 +101,6 @@ def optimization(M, R, randomness, n_sample, max_delayed):
     if randomness == 'det':
         for k in range(M):
             Tcomp.append(random.choice(trace[k % 25]))
-            #mean_ul = np.random.uniform(10, 20)
-            #mean_dl = np.random.uniform(10, 20)
-            # mean_dl = np.random.normal(15, 10)
-            # Tul.append(5*np.random.uniform(mean_dl - 5, mean_dl + 5))
-            # Tdl.append(5*np.random.uniform(mean_dl - 5, mean_dl + 5))
-            #device_id = random.choice(common_list)
             device_id = common_list[1]
             Tul.append(5.2e3/random.choice(uplink_trace[device_id]))
             Tdl.append(5.2e3/random.choice(downlink_trace[device_id]))
@@ -156,35 +150,14 @@ M = 200
 # n_sample = np.arange(200,300,2)
 n_sample = np.arange(200,600,2)
 np.savez('n_sample_large', n_sample = n_sample)
-# npzfile = np.load('n_sample.npz')
-# npzfile = np.load('n_sample_mnist.npz')
-# n_sample = npzfile['n_sample']
 range_samples = [sum(n_sample[0:i]) for i in range(len(n_sample)+1)]
 n_sample_fraction = n_sample/sum(n_sample)
 
-# ratio_list = []
-# for _ in range(200):
-#     [Kcache, Kserver, Tcomp, Tdl, Tul] = optimization(M, 200, 'det', n_sample_fraction, M)
-#     Tsingle_cacheFL = compute_Tsingle(Kcache, Kserver, Tcomp, Tul, Tdl)
-#     Tsingle_regular = compute_Tsingle([], range(M), Tcomp, Tul, Tdl)
-#     T_ratio = Tsingle_cacheFL / Tsingle_regular
-#     ratio_list.append(T_ratio)
-# np.savez('ratio_list', ratio_list = ratio_list)
-
-while True:
-    [Kcache, Kserver, Tcomp, Tdl, Tul] = optimization(M, 200, 'det', n_sample_fraction, M)
-    Tsingle_cacheFL = compute_Tsingle(Kcache, Kserver, Tcomp, Tul, Tdl)
-    Tsingle_regular = compute_Tsingle([], range(M), Tcomp, Tul, Tdl)
-    Tsingle_less = compute_Tsingle([], Kserver, Tcomp, Tul, Tdl)
-    T_ratio = Tsingle_cacheFL / Tsingle_regular
-    if (T_ratio < 0.65) & (len(Kcache)>=5) & (Tsingle_cacheFL - Tsingle_less < 5):
-        break
-
-# generate client partition
 [Kcache, Kserver, Tcomp, Tdl, Tul] = optimization(M, 200, 'det', n_sample_fraction, M)
 Tsingle_cacheFL = compute_Tsingle(Kcache, Kserver, Tcomp, Tul, Tdl)
 Tsingle_regular = compute_Tsingle([], range(M), Tcomp, Tul, Tdl)
-T_ratio = Tsingle_cacheFL/Tsingle_regular
+Tsingle_less = compute_Tsingle([], Kserver, Tcomp, Tul, Tdl)
+T_ratio = Tsingle_cacheFL / Tsingle_regular
 Tsingle_less = compute_Tsingle([], Kserver, Tcomp, Tul, Tdl)
 Tsingle_random = []
 Kcache_list = []

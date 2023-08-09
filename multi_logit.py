@@ -523,7 +523,7 @@ n_sample = 50*np.random.zipf(2, M)
 range_samples = [sum(n_sample[0:i]) for i in range(len(n_sample)+1)]
 n_sample_fraction = n_sample/sum(n_sample)
 
-"""
+
 # generate client partition
 [Kcache, Kserver, Tcomp, Tdl, Tul] = optimization(M, 200, 'det', n_sample_fraction, 5)
 Tsingle_cacheFL = compute_Tsingle(Kcache, Kserver, Tcomp, Tul, Tdl)
@@ -542,7 +542,7 @@ for r in range(20):
     Tsingle_random.append(compute_Tsingle(Kcache_r, Kserver_r, Tcomp, Tul, Tdl))
 
 np.savez('random_delay_lesser', Kcache = Kcache, Kserver = Kserver, Tsingle_cacheFL = Tsingle_cacheFL, Tsingle_less = Tsingle_less, Tsingle_regular = Tsingle_regular, Tsingle_random = Tsingle_random)
-"""
+
 
 if dataset == 'real':
     data = load_svmlight_file(dataset_name)
@@ -620,26 +620,25 @@ else:
     lc_stepsizes = [float(learning_rate)]
 
 
-npzfile = np.load('random_delay.npz')
-Kcache = npzfile['Kcache']
-Kserver = npzfile['Kserver']
-Tsingle_cacheFL = float(npzfile['Tsingle_cacheFL'])
-Tsingle_less = float(npzfile['Tsingle_less'])
-Tsingle_regular = float(npzfile['Tsingle_regular'])
-Tsingle_random = npzfile['Tsingle_random']
-with open("Kcache_list", "rb") as fp:
-    Kcache_list = pickle.load(fp)
-with open("Kserver_list", "rb") as fp:
-    Kserver_list = pickle.load(fp)
+# npzfile = np.load('random_delay.npz')
+# Kcache = npzfile['Kcache']
+# Kserver = npzfile['Kserver']
+# Tsingle_cacheFL = float(npzfile['Tsingle_cacheFL'])
+# Tsingle_less = float(npzfile['Tsingle_less'])
+# Tsingle_regular = float(npzfile['Tsingle_regular'])
+# Tsingle_random = npzfile['Tsingle_random']
+# with open("Kcache_list", "rb") as fp:
+#     Kcache_list = pickle.load(fp)
+# with open("Kserver_list", "rb") as fp:
+#     Kserver_list = pickle.load(fp)
+#
+#
+# with open("Kcache_list", "wb") as fp:
+#     pickle.dump(Kcache_list, fp)
+# with open("Kserver_list", "wb") as fp:
+#     pickle.dump(Kserver_list, fp)
 
 
-with open("Kcache_list", "wb") as fp:
-    pickle.dump(Kcache_list, fp)
-with open("Kserver_list", "wb") as fp:
-    pickle.dump(Kserver_list, fp)
-
-
-loss_function = 'binary logistic loss'
 objective_value = lambda x: mlogit_loss(x, features, labels) #+ 0.05*np.linalg.norm(x)**2
 objective_full_gradient = lambda x: mlogit_loss_full_gradient(x, features, labels) #+ 0.1*x
 objective_stochastic_gradient = lambda x, minibatch_size: mlogit_loss_stochastic_gradient(x, features, labels, minibatch_size) #+ 0.1*x
@@ -655,5 +654,3 @@ print('Fstar = {:.5f}'.format(fstar))
 experiment(M,K=5,R=400,plotfile= plot_prefix + '/smallM-smallK-' + distribution + dataset_name + '.png',savearray=plot_prefix + '/smallM-smallK-' + distribution + dataset_name)
 #experiment(M=500,K=5,R=200,plotfile= plot_prefix + '/bigM-smallK-' + distribution + '.png',savearray=plot_prefix + '/bigM-smallK-' + distribution)
 #experiment(M=50,K=40,R=200,plotfile= plot_prefix + '/smallM-bigK-' + distribution + '.png',savearray=plot_prefix + '/smallM-bigK-' + distribution)
-#experiment(M=500,K=40,R=100,plotfile='plots/bigM-bigK-het.png',savearray='plots/bigM-bigK-het')
-#experiment(M=50,K=200,R=100,plotfile='plots/smallM-biggerK-het.png',savearray='plots/smallM-biggerK-het')

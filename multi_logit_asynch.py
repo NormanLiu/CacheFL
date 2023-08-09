@@ -578,14 +578,9 @@ agg_scheme = int(agg_scheme)
 C = 10 # number of classes
 # number of samples on each device follows a power law
 M = 50
-#n_sample = 50*np.random.zipf(2, M)
-#np.savez('n_sample', n_sample = n_sample)
-if dataset_name == 'mnist.scale':
-    #npzfile = np.load('n_sample_mnist.npz')
-    npzfile = np.load('n_sample_balance_less.npz')
-elif dataset_name == 'cifar10':
-    npzfile = np.load('n_sample_cifar10.npz')
-n_sample = npzfile['n_sample']
+n_sample = 50*np.random.zipf(2, M)
+# np.savez('n_sample', n_sample = n_sample)
+# n_sample = npzfile['n_sample']
 #n_sample = n_sample * 2 # remember to remove this line
 range_samples = [sum(n_sample[0:i]) for i in range(len(n_sample)+1)]
 n_sample_fraction = n_sample/sum(n_sample)
@@ -627,16 +622,6 @@ if dataset == 'real':
     elif distribution == 'het':
         samples_idx = []
         for k in range(M):
-            # if dataset_name == 'mnist.scale':
-            #     classes = np.random.choice(10, 1, replace=False)
-            #     candidate1 = np.where(labels_array == classes[0])
-            #     samples_idx += np.ndarray.tolist(np.random.choice(candidate1[0], n_sample[k], replace=True))
-            # else:
-            #     classes = np.random.choice(10, 2, replace=False)
-            #     candidate1 = np.where(labels_array == classes[0])
-            #     candidate2 = np.where(labels_array == classes[1])
-            #     candidate = np.concatenate([candidate1[0], candidate2[0]])
-            #     samples_idx += np.ndarray.tolist(np.random.choice(candidate, n_sample[k], replace=True))
             classes = np.random.choice(10, 2, replace=False)
             candidate1 = np.where(labels_array == classes[0])
             candidate2 = np.where(labels_array == classes[1])
@@ -734,7 +719,6 @@ else:
     lc_stepsizes = [float(learning_rate)]
 
 if dataset_name == 'mnist.scale':
-    # npzfile = np.load('random_delay_traces_asynch_mnist.npz')
     npzfile = np.load('random_delay_balance_less.npz')
 elif dataset_name == 'cifar10':
     npzfile = np.load('random_delay_traces_asynch_cifar10.npz')
@@ -766,7 +750,6 @@ for _ in range(M * 200 * 2):
     clientAction_list.append(next_k)
     next_update[next_k] += Tsingle_k[next_k]
 
-loss_function = 'binary logistic loss'
 objective_value = lambda x: mlogit_loss(x, features, labels) #+ 0.05*np.linalg.norm(x)**2
 objective_full_gradient = lambda x: mlogit_loss_full_gradient(x, features, labels) #+ 0.1*x
 objective_stochastic_gradient = lambda x, minibatch_size: mlogit_loss_stochastic_gradient(x, features, labels, minibatch_size) #+ 0.1*x
@@ -782,5 +765,3 @@ print('Fstar = {:.5f}'.format(fstar))
 experiment(M,K=5,R=60,plotfile= plot_prefix + '/smallM-smallK-asynch-' + distribution + dataset_name + str(agg_scheme) + '.png',savearray=plot_prefix + '/smallM-smallK-asynch-' + distribution + dataset_name + str(agg_scheme))
 #experiment(M=500,K=5,R=200,plotfile= plot_prefix + '/bigM-smallK-' + distribution + '.png',savearray=plot_prefix + '/bigM-smallK-' + distribution)
 #experiment(M=50,K=40,R=200,plotfile= plot_prefix + '/smallM-bigK-' + distribution + '.png',savearray=plot_prefix + '/smallM-bigK-' + distribution)
-#experiment(M=500,K=40,R=100,plotfile='plots/bigM-bigK-het.png',savearray='plots/bigM-bigK-het')
-#experiment(M=50,K=200,R=100,plotfile='plots/smallM-biggerK-het.png',savearray='plots/smallM-biggerK-het')

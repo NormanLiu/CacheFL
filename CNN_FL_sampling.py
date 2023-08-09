@@ -695,15 +695,10 @@ sampledClientList = npzfile['sampledClientList']
 C = 10 # number of classes
 # number of samples on each device follows a power law
 M = 50
-# n_sample = 100*np.random.zipf(2, M)
+n_sample = 100*np.random.zipf(2, M)
 # np.savez('n_sample_more', n_sample = n_sample)
-npzfile = np.load('n_sample_balance_less.npz')
-# if dataset_name == 'mnist.scale':
-#     # npzfile = np.load('n_sample_mnist.npz')
-#     npzfile = np.load('n_sample_balance_less.npz')
-# elif dataset_name == 'cifar10':
-#     npzfile = np.load('n_sample_mnist.npz')
-n_sample = npzfile['n_sample']
+# npzfile = np.load('n_sample_balance_less.npz')
+# n_sample = npzfile['n_sample']
 n_sample = [n_sample[i]//5 for i in range(M)]
 range_samples = [sum(n_sample[0:i]) for i in range(len(n_sample)+1)]
 n_sample_fraction = n_sample/sum(n_sample)
@@ -725,9 +720,6 @@ with open("Kcache_list", "rb") as fp:
     Kcache_list = pickle.load(fp)
 with open("Kserver_list", "rb") as fp:
     Kserver_list = pickle.load(fp)
-# sample_min = [x for x in range(M) if n_sample[x] == 5]
-# Kcache = sample_min[0:5]
-# Kserver = [x for x in range(M) if x not in Kcache]
 
 
 # training data
@@ -756,11 +748,6 @@ elif distribution == 'het':
             candidate2 = np.where(labels_array == classes[1])
             candidate = np.concatenate([candidate1[0], candidate2[0]])
             samples_idx += np.ndarray.tolist(np.random.choice(candidate, n_sample[k], replace=True))
-        # classes = np.random.choice(10, 2, replace=False)
-        # candidate1 = np.where(labels_array == classes[0])
-        # candidate2 = np.where(labels_array == classes[1])
-        # candidate = np.concatenate([candidate1[0], candidate2[0]])
-        # samples_idx += np.ndarray.tolist(np.random.choice(candidate, n_sample[k], replace=False))
     features = features[samples_idx]
     labels_array = labels_array[samples_idx]
 N = features.shape[0]
@@ -792,5 +779,3 @@ print('Fstar = {:.5f}'.format(fstar))
 experiment(M,K=5,R=200,plotfile= plot_prefix + '/smallM-smallK-' + distribution + dataset_name + alg_sel + str(learning_rate) + 'sampling-CCN.png',savearray=plot_prefix + '/smallM-smallK-' + distribution + dataset_name + alg_sel + str(learning_rate) + 'sampling-CCN')
 #experiment(M=500,K=5,R=200,plotfile= plot_prefix + '/bigM-smallK-' + distribution + '.png',savearray=plot_prefix + '/bigM-smallK-' + distribution)
 #experiment(M=50,K=40,R=200,plotfile= plot_prefix + '/smallM-bigK-' + distribution + '.png',savearray=plot_prefix + '/smallM-bigK-' + distribution)
-#experiment(M=500,K=40,R=100,plotfile='plots/bigM-bigK-het.png',savearray='plots/bigM-bigK-het')
-#experiment(M=50,K=200,R=100,plotfile='plots/smallM-biggerK-het.png',savearray='plots/smallM-biggerK-het')

@@ -617,8 +617,6 @@ dataset_name = sys.argv[6] if len(sys.argv) > 6 else 'cifar10'
 print([frac_delay, learning_rate, distribution, dataset, plot_prefix, dataset_name])
 
 
-#npzfile = np.load('smallM-smallK-hetmnist.scale-MLPgrid_search.npz')
-#local_results_acc = npzfile['local_results_acc']
 
 #generate data
 C = 10 # number of classes
@@ -628,7 +626,6 @@ M = 50
 # np.savez('n_sample_more', n_sample = n_sample)
 #npzfile = np.load('n_sample.npz')
 if dataset_name == 'mnist.scale':
-    # npzfile = np.load('n_sample_mnist.npz')
     npzfile = np.load('n_sample_balance_less.npz')
 elif dataset_name == 'cifar10':
     npzfile = np.load('n_sample_mnist.npz')
@@ -637,9 +634,7 @@ n_sample = n_sample//5
 range_samples = [sum(n_sample[0:i]) for i in range(len(n_sample)+1)]
 n_sample_fraction = n_sample/sum(n_sample)
 
-#npzfile = np.load('random_delay_traces_more.npz')
 if dataset_name == 'mnist.scale':
-    #npzfile = np.load('random_delay_traces_asynch_mnist.npz')
     npzfile = np.load('random_delay_balance_less.npz')
 elif dataset_name == 'cifar10':
     npzfile = np.load('random_delay_traces_asynch_mnist.npz')
@@ -653,40 +648,7 @@ with open("Kcache_list", "rb") as fp:
     Kcache_list = pickle.load(fp)
 with open("Kserver_list", "rb") as fp:
     Kserver_list = pickle.load(fp)
-# sample_min = [x for x in range(M) if n_sample[x] == 5]
-# Kcache = sample_min[0:5]
-# Kserver = [x for x in range(M) if x not in Kcache]
 
-# if True:  # recreate MNIST arrays. Do it only once, after that modify to False
-#     train_data = np.loadtxt("mnist_train.csv", delimiter=",")
-#     test_data = np.loadtxt("mnist_test.csv", delimiter=",")
-#     train_imgs = np.asfarray(train_data[:, 1:]) / 255.0
-#     test_imgs = np.asfarray(test_data[:, 1:]) / 255.0
-#     train_labels = np.asfarray(train_data[:, :1])
-#     test_labels = np.asfarray(test_data[:, :1])
-#     lr = np.arange(10)
-#     train_labels_one_hot = (lr==train_labels).astype(np.float)
-#     test_labels_one_hot = (lr==test_labels).astype(np.float)
-
-# if distribution == 'iid':
-#     features = train_imgs[0:range_samples[-1]]
-#     labels_array = train_labels[0:range_samples[-1]]
-# elif distribution == 'het':
-#     samples_idx = []
-#     for k in range(M):
-#         classes = np.random.choice(10, 2, replace=False)
-#         #classes = np.asfarray(classes)
-#         candidate1 = np.where(train_labels == classes[0])
-#         candidate2 = np.where(train_labels == classes[1])
-#         candidate = np.concatenate([candidate1[0], candidate2[0]])
-#         samples_idx += np.ndarray.tolist(np.random.choice(candidate, n_sample[k], replace=False))
-#     features = train_imgs[samples_idx]
-#     labels_array = train_labels[samples_idx]
-# N = features.shape[0]
-# labels = np.zeros((N, C))
-# for i in range(N):
-#     labels[i, int(labels_array[i])] = 1
-# features_t, labels_t = test_imgs, test_labels
 
 data = load_svmlight_file(dataset_name)
 features, labels_array = data[0].toarray(), data[1]
@@ -754,5 +716,3 @@ print('Fstar = {:.5f}'.format(fstar))
 experiment(M,K=3,R=60,plotfile= plot_prefix + '/smallM-smallK-' + distribution + dataset_name + '-MLP.png',savearray=plot_prefix + '/smallM-smallK-' + distribution + dataset_name+'-MLP')
 #experiment(M=500,K=5,R=200,plotfile= plot_prefix + '/bigM-smallK-' + distribution + '.png',savearray=plot_prefix + '/bigM-smallK-' + distribution)
 #experiment(M=50,K=40,R=200,plotfile= plot_prefix + '/smallM-bigK-' + distribution + '.png',savearray=plot_prefix + '/smallM-bigK-' + distribution)
-#experiment(M=500,K=40,R=100,plotfile='plots/bigM-bigK-het.png',savearray='plots/bigM-bigK-het')
-#experiment(M=50,K=200,R=100,plotfile='plots/smallM-biggerK-het.png',savearray='plots/smallM-biggerK-het')
